@@ -6,6 +6,10 @@ This implements a pseudo notification daemon, which **tries to** manage the stat
 
 Along with that, this also implements the `org.freedesktop.Notifications` DBus Name, so you can use utilities like `notify-send` to manage notifications.
 
+## Building & Running
+To build this "monstrosity", install the latest `go` compiler and type `go build ./cmd/hyprnotify` from the project root.
+
+To run just execute the binary `hyprnotify`
 ## Demo
 ![hyprnotify_demo](https://github.com/codelif/hyprnotify/assets/68972644/d9985035-3c8e-43cf-97e1-7f25219039e3)
 
