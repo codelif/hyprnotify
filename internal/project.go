@@ -1,8 +1,7 @@
 package internal
 
 const (
-  VERSION = "0.0.1"
-  PACKAGE = "hyprnotify"
-  AUTHOR = "codelif"
+	VERSION = "0.1.0"
+	PACKAGE = "hyprnotify"
+	AUTHOR  = "codelif"
 )
-
