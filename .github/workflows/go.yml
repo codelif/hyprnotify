@@ -25,6 +25,10 @@ jobs:
 
     - name: Build
       run: go build -v ./cmd/hyprnotify
+      
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v4.3.1
+      with:
+        name: hyprnotify
+        path: hyprnotify
 
- #   - name: Test
- #     run: go test -v ./...
