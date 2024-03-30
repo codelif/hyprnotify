@@ -121,12 +121,4 @@ func GetHyprSocket(hypr *HyprConn) {
 	attachIconsStruct(hypr)
 	attachColorsStruct(hypr)
 	hypr.DEFAULT_FONT_SIZE = "13"
-
-	hyprsock.Notify(
-		hyprsock.icon.INFO,
-		10000,
-		hyprsock.color.GREEN,
-		"Test",
-		hyprsock.DEFAULT_FONT_SIZE,
-	)
 }
