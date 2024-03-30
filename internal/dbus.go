@@ -83,7 +83,6 @@ func (n Notifications) Notify(
 	hints map[string]dbus.Variant,
 	expire_timeout int32,
 ) (uint32, *dbus.Error) {
-	fmt.Printf("Notification get: %s", body)
 	if expire_timeout == -1 {
 		expire_timeout = 5000
 	}
@@ -110,7 +109,6 @@ func (n Notifications) GetServerInformation() (string, string, string, string, *
 
 func SendCloseSignal(timeout int32, reason uint32) {
 	d := time.Duration(int64(timeout)) * time.Millisecond
-	fmt.Println("Waiting for ", d, timeout)
 	time.Sleep(d)
 	conn.Emit(
 		FDN_PATH,
@@ -121,7 +119,6 @@ func SendCloseSignal(timeout int32, reason uint32) {
 }
 
 func InitDBus() {
-	fmt.Println(DBUS_XML)
 	var err error
 	conn, err = dbus.ConnectSessionBus()
 	if err != nil {
@@ -142,9 +139,5 @@ func InitDBus() {
 		fmt.Fprintln(os.Stderr, "name already taken")
 		os.Exit(1)
 	}
-
-	conn.Emit(FDN_PATH, FDN_IFAC, "hello")
-
-	fmt.Printf("Listening on %s / %s", FDN_NAME, FDN_PATH)
 	select {}
 }

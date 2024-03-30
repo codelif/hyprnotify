@@ -1,10 +1,9 @@
 package main
 
 import (
-  "github.com/codelif/hyprnotify/internal"
+	"github.com/codelif/hyprnotify/internal"
 )
 
-
-func main(){
-  internal.InitDBus()
+func main() {
+	internal.InitDBus()
 }
