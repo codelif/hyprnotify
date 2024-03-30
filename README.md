@@ -15,7 +15,8 @@ To run just execute the binary `hyprnotify`
 
 ## TODO
  - [x] Implement the DBus Protocol
- - [ ] Replace shell command invocation with IPC
+ - [x] Replace shell command invocation with IPC
+ - [ ] Implement Hints for custom options like font size, color, etc 
  - [ ] Scrap the Project
 
 ## Why?
