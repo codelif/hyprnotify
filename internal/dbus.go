@@ -3,8 +3,6 @@ package internal
 import (
 	"fmt"
 	"os"
-	"os/exec"
-	"strconv"
 	"time"
 
 	"github.com/godbus/dbus/v5"
@@ -63,13 +61,15 @@ const DBUS_XML = `<node name="` + FDN_PATH + `">
 ` + introspect.IntrospectDataString + `
 </node>`
 
-var conn *dbus.Conn
+var (
+	conn     *dbus.Conn
+	hyprsock HyprConn
+)
 
 type Notifications string
 
 func (n Notifications) GetCapabilities() ([]string, *dbus.Error) {
 	var cap []string
-	cap = append(cap, "body")
 	return cap, nil
 }
 
@@ -87,17 +87,19 @@ func (n Notifications) Notify(
 		expire_timeout = 5000
 	}
 
-	cmd := exec.Command("hyprctl", "notify", "-1", strconv.FormatInt(int64(expire_timeout), 10), "0", summary+" "+body)
-	// out, _ := cmd.Output()
-	cmd.Run()
-	// fmt.Println(string(expire_timeout))
-
+	hyprsock.Notify(
+		hyprsock.icon.INFO,
+		expire_timeout,
+		hyprsock.color.GREEN,
+		summary,
+		hyprsock.DEFAULT_FONT_SIZE,
+	)
 	go SendCloseSignal(expire_timeout, 1)
 	return 1, nil
 }
 
 func (n Notifications) CloseNotification(id uint32) *dbus.Error {
-	exec.Command("hyprctl", "dismissnotify").Run()
+	hyprsock.DismissNotify(-1)
 
 	go SendCloseSignal(0, 3)
 	return nil
@@ -125,6 +127,8 @@ func InitDBus() {
 		panic(err)
 	}
 	defer conn.Close()
+
+	GetHyprSocket(&hyprsock)
 
 	n := Notifications(PACKAGE)
 	conn.Export(n, FDN_PATH, FDN_IFAC)
