@@ -87,12 +87,14 @@ func (n Notifications) Notify(
 		expire_timeout = 5000
 	}
 
+	icon, color, icon_padding, font_size := prepare_icons_colors_fontsize(hints)
+
 	hyprsock.Notify(
-		hyprsock.icon.INFO,
+		icon,
 		expire_timeout,
-		hyprsock.color.GREEN,
-		summary,
-		hyprsock.DEFAULT_FONT_SIZE,
+		color,
+		icon_padding+summary,
+		font_size,
 	)
 	go SendCloseSignal(expire_timeout, 1)
 	return 1, nil
@@ -118,6 +120,36 @@ func SendCloseSignal(timeout int32, reason uint32) {
 		uint32(0),
 		reason,
 	)
+}
+
+func prepare_icons_colors_fontsize(hints map[string]dbus.Variant) (string, string, string, string) {
+	color := hyprsock.color.DEFAULT
+	icon := hyprsock.icon.INFO
+	icon_padding := " "
+
+	urgency, ok := hints["urgency"].Value().(uint8)
+	if !ok {
+		urgency = 1
+	}
+
+	font_size, ok := hints["x-hyprnotify-font-size"].Value().(string)
+	if !ok {
+		font_size = "13"
+	}
+
+	if urgency == 0 {
+		icon = hyprsock.icon.OK
+		color = hyprsock.color.GREEN
+	} else if urgency == 1 {
+		icon = hyprsock.icon.NOICON
+		color = hyprsock.color.LIGHTBLUE
+	} else if urgency == 2 {
+		icon = hyprsock.icon.WARNING
+		color = hyprsock.color.RED
+		icon_padding = "  "
+	}
+
+	return icon, color, icon_padding, font_size
 }
 
 func InitDBus() {

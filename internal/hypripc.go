@@ -28,14 +28,15 @@ type HyprConn struct {
 }
 
 type Colors struct {
-	DEFAULT string
-	VIOLET  string
-	INDIGO  string
-	BLUE    string
-	GREEN   string
-	YELLOW  string
-	ORANGE  string
-	RED     string
+	DEFAULT   string
+	VIOLET    string
+	INDIGO    string
+	BLUE      string
+	LIGHTBLUE string
+	GREEN     string
+	YELLOW    string
+	ORANGE    string
+	RED       string
 }
 
 type Icons struct {
@@ -108,6 +109,7 @@ func attachColorsStruct(hypr *HyprConn) {
 	color.VIOLET = color.HEX("9400D3")
 	color.INDIGO = color.HEX("4B0082")
 	color.BLUE = color.HEX("0000FF")
+	color.LIGHTBLUE = color.HEX("00d2ff")
 	color.GREEN = color.HEX("00FF00")
 	color.YELLOW = color.HEX("FFFF00")
 	color.ORANGE = color.HEX("FF7F00")
