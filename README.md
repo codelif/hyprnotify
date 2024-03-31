@@ -24,7 +24,7 @@
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 [![Go][golang-shield]][golang-url]
-
+![](https://github.com/codelif/hyprnotify/actions/workflows/go.yml/badge.svg)
 
 <!-- PROJECT LOGO -->
 <br />
@@ -196,6 +196,7 @@ Project Link: [https://github.com/codelif/hyprnotify](https://github.com/codelif
 
 * [hyprwm community](https://github.com/hyprwm/Hyprland) for Hyprland (special thanks to [vaxry](https://github.com/vaxerski))
 * [go](https://go.dev) for go
+* [Freedesktop.org Desktop Notification Specification](https://specifications.freedesktop.org/notification-spec/notification-spec-latest.html)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
