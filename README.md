@@ -16,11 +16,14 @@ To run just execute the binary `hyprnotify`
 ## TODO
  - [x] Implement the DBus Protocol
  - [x] Replace shell command invocation with IPC
- - [ ] Implement Hints for custom options like font size, color, etc 
+ - [x] Implement Hint:urgency
+ - [x] Implement Hint:x-hyprnotify-font-size
+ - [ ] Implement Hint:x-hyprnotify-color
+ - [ ] Add support for sound
  - [ ] Scrap the Project
 
 ## Why?
-No Reason in particular, just wanted to learn Go & DBus this ~~week~~ today.
+No Reason in particular, just wanted to learn Go & DBus this week.
 
 ## How?
 By sacrificing everything I stood for. This thing is filled with race conditions.
