@@ -72,10 +72,10 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-![](assets/demo.gif)
-
 Hyprnotify is a [Freedesktop.org](https://specifications.freedesktop.org/notification-spec/notification-spec-latest.html) compliant notification daemon implementing `hyprctl notify` as its backend.
 
+
+![](assets/demo.gif)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -116,7 +116,7 @@ Execute the daemon:
 ```sh
 ./hyprnotify
 ```
-Now execute any of the command in another shell:\
+Now execute any of the commands below in another shell.
 
 Send a notification:
 ```sh
@@ -126,7 +126,7 @@ Add a font-size hint:
 ```sh
 notify-send "This is very big!" -h string:x-hyprnotify-font-size:40
 ```
-Add a urgency hint and last for 20 seconds:
+Add an urgency hint and last for 20 seconds:
 ```sh
 notify-send "This is serious stuff!" -u critical -t 20000 
 ```
@@ -156,7 +156,7 @@ notify-send "This is serious stuff!" -u critical -t 20000
 <!-- CONTRIBUTING -->
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
 If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
 Don't forget to give the project a star! Thanks again!
