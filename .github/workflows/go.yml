@@ -27,7 +27,6 @@ jobs:
       run: |
         go build -v ./cmd/hyprnotify
         strip hyprnotify
-        chmod +x hyprnotify
         
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v4.3.1
