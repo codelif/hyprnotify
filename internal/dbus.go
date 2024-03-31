@@ -108,7 +108,7 @@ func (n Notifications) CloseNotification(id uint32) *dbus.Error {
 }
 
 func (n Notifications) GetServerInformation() (string, string, string, string, *dbus.Error) {
-	return PACKAGE, AUTHOR, VERSION, FDN_SPEC_VERSION, nil
+	return PACKAGE, VENDOR, VERSION, FDN_SPEC_VERSION, nil
 }
 
 func SendCloseSignal(timeout int32, reason uint32) {
