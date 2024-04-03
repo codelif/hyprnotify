@@ -3,6 +3,7 @@ package internal
 import (
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -170,6 +171,13 @@ func prepare_icons_colors_fontsize(hints map[string]dbus.Variant) (string, strin
       color = hyprsock.color.HEX(hint_color)
     }
   }
+
+  hint_icon, ok:= hints["x-hyprnotify-icon"].Value().(int32)
+  if ok {
+    icon = strconv.FormatInt(int64(hint_icon), 10)
+  }
+
+
 
 	return icon, color, icon_padding, font_size
 }
