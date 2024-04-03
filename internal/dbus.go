@@ -3,6 +3,7 @@ package internal
 import (
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/godbus/dbus/v5"
@@ -122,6 +123,17 @@ func SendCloseSignal(timeout int32, reason uint32) {
 	)
 }
 
+func is_valid_hex_string(code string) bool{
+  valid := "0123456789abcdefABCDEF"
+
+  for _,v := range code {
+    if !strings.ContainsRune(valid, v){
+      return false
+    }
+  }
+  return true
+}
+
 func prepare_icons_colors_fontsize(hints map[string]dbus.Variant) (string, string, string, string) {
 	color := hyprsock.color.DEFAULT
 	icon := hyprsock.icon.INFO
@@ -130,11 +142,6 @@ func prepare_icons_colors_fontsize(hints map[string]dbus.Variant) (string, strin
 	urgency, ok := hints["urgency"].Value().(uint8)
 	if !ok {
 		urgency = 1
-	}
-
-	font_size, ok := hints["x-hyprnotify-font-size"].Value().(string)
-	if !ok {
-		font_size = "13"
 	}
 
 	if urgency == 0 {
@@ -148,6 +155,21 @@ func prepare_icons_colors_fontsize(hints map[string]dbus.Variant) (string, strin
 		color = hyprsock.color.RED
 		icon_padding = "  "
 	}
+
+	font_size, ok := hints["x-hyprnotify-font-size"].Value().(string)
+	if !ok {
+		font_size = "13"
+	}
+
+  hint_color, ok:= hints["x-hyprnotify-color"].Value().(string)
+  if ok {
+    if string(hint_color[0]) == "#"{
+      hint_color = hint_color[1:]
+    }
+    if len(hint_color) == 6 && is_valid_hex_string(hint_color){
+      color = hyprsock.color.HEX(hint_color)
+    }
+  }
 
 	return icon, color, icon_padding, font_size
 }
