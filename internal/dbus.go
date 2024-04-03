@@ -3,8 +3,6 @@ package internal
 import (
 	"fmt"
 	"os"
-	"strconv"
-	"strings"
 	"time"
 
 	"github.com/godbus/dbus/v5"
@@ -68,14 +66,14 @@ var (
 	hyprsock HyprConn
 )
 
-type Notifications string
+type DBusNotify string
 
-func (n Notifications) GetCapabilities() ([]string, *dbus.Error) {
+func (n DBusNotify) GetCapabilities() ([]string, *dbus.Error) {
 	var cap []string
 	return cap, nil
 }
 
-func (n Notifications) Notify(
+func (n DBusNotify) Notify(
 	app_name string,
 	replaces_id uint32,
 	app_icon string,
@@ -85,31 +83,29 @@ func (n Notifications) Notify(
 	hints map[string]dbus.Variant,
 	expire_timeout int32,
 ) (uint32, *dbus.Error) {
-	if expire_timeout == -1 {
-		expire_timeout = 5000
+
+	nf := NewNotification()
+
+  nf.message = summary
+	parse_hints(&nf, hints)
+
+	if expire_timeout != -1 {
+		nf.time_ms = expire_timeout
 	}
+	hyprsock.SendNotification(&nf)
 
-	icon, color, icon_padding, font_size := prepare_icons_colors_fontsize(hints)
-
-	hyprsock.Notify(
-		icon,
-		expire_timeout,
-		color,
-		icon_padding+summary,
-		font_size,
-	)
 	go SendCloseSignal(expire_timeout, 1)
 	return 1, nil
 }
 
-func (n Notifications) CloseNotification(id uint32) *dbus.Error {
+func (n DBusNotify) CloseNotification(id uint32) *dbus.Error {
 	hyprsock.DismissNotify(-1)
 
 	go SendCloseSignal(0, 3)
 	return nil
 }
 
-func (n Notifications) GetServerInformation() (string, string, string, string, *dbus.Error) {
+func (n DBusNotify) GetServerInformation() (string, string, string, string, *dbus.Error) {
 	return PACKAGE, VENDOR, VERSION, FDN_SPEC_VERSION, nil
 }
 
@@ -124,62 +120,34 @@ func SendCloseSignal(timeout int32, reason uint32) {
 	)
 }
 
-func is_valid_hex_string(code string) bool{
-  valid := "0123456789abcdefABCDEF"
-
-  for _,v := range code {
-    if !strings.ContainsRune(valid, v){
-      return false
-    }
-  }
-  return true
-}
-
-func prepare_icons_colors_fontsize(hints map[string]dbus.Variant) (string, string, string, string) {
-	color := hyprsock.color.DEFAULT
-	icon := hyprsock.icon.INFO
-	icon_padding := " "
+func parse_hints(nf *Notification, hints map[string]dbus.Variant) {
 
 	urgency, ok := hints["urgency"].Value().(uint8)
-	if !ok {
-		urgency = 1
+	if ok {
+		nf.set_urgency(urgency)
 	}
 
-	if urgency == 0 {
-		icon = hyprsock.icon.OK
-		color = hyprsock.color.GREEN
-	} else if urgency == 1 {
-		icon = hyprsock.icon.NOICON
-		color = hyprsock.color.LIGHTBLUE
-	} else if urgency == 2 {
-		icon = hyprsock.icon.WARNING
-		color = hyprsock.color.RED
-		icon_padding = "  "
+	font_size, ok := hints["x-hyprnotify-font-size"].Value().(int32)
+	if ok {
+		nf.font_size.value = font_size
 	}
 
-	font_size, ok := hints["x-hyprnotify-font-size"].Value().(string)
-	if !ok {
-		font_size = "13"
+	hint_color, ok := hints["x-hyprnotify-color"].Value().(string)
+	if ok {
+		if string(hint_color[0]) == "#" {
+			hint_color = hint_color[1:]
+		}
+		if len(hint_color) == 6 && is_valid_hex_string(hint_color) {
+			nf.color.value = nf.color.HEX(hint_color)
+		}
 	}
 
-  hint_color, ok:= hints["x-hyprnotify-color"].Value().(string)
-  if ok {
-    if string(hint_color[0]) == "#"{
-      hint_color = hint_color[1:]
-    }
-    if len(hint_color) == 6 && is_valid_hex_string(hint_color){
-      color = hyprsock.color.HEX(hint_color)
-    }
-  }
+	hint_icon, ok := hints["x-hyprnotify-icon"].Value().(int32)
+	if ok {
+		nf.icon.value = hint_icon
+		nf.icon.padding = ""
+	}
 
-  hint_icon, ok:= hints["x-hyprnotify-icon"].Value().(int32)
-  if ok {
-    icon = strconv.FormatInt(int64(hint_icon), 10)
-  }
-
-
-
-	return icon, color, icon_padding, font_size
 }
 
 func InitDBus() {
@@ -192,7 +160,7 @@ func InitDBus() {
 
 	GetHyprSocket(&hyprsock)
 
-	n := Notifications(PACKAGE)
+	n := DBusNotify(PACKAGE)
 	conn.Export(n, FDN_PATH, FDN_IFAC)
 	conn.Export(introspect.Introspectable(DBUS_XML), FDN_PATH, INTROSPECTABLE_IFAC)
 

@@ -21,42 +21,7 @@ func GetHyprSocketAddr() string {
 }
 
 type HyprConn struct {
-	addr              string
-	icon              Icons
-	color             Colors
-	DEFAULT_FONT_SIZE string
-}
-
-type Colors struct {
-	DEFAULT   string
-	VIOLET    string
-	INDIGO    string
-	BLUE      string
-	LIGHTBLUE string
-	GREEN     string
-	YELLOW    string
-	ORANGE    string
-	RED       string
-}
-
-type Icons struct {
-	NOICON   string
-	WARNING  string
-	INFO     string
-	HINT     string
-	ERROR    string
-	CONFUSED string
-	OK       string
-}
-
-func (c Colors) HEX(hexcode string) string {
-	if string(hexcode[0]) == "#" {
-		hexcode = hexcode[1:]
-	}
-	return "rgb(" + hexcode + ")"
-}
-
-func (hypr HyprConn) GetConn() {
+	addr string
 }
 
 func (hypr HyprConn) HyprCtl(args ...string) {
@@ -73,16 +38,14 @@ func (hypr HyprConn) HyprCtl(args ...string) {
 	}
 }
 
-func (hypr HyprConn) Notify(
-	icon string,
-	time_ms int32,
-	color string,
-	msg string,
-	font_size string,
-) {
-	fmt_msg := "fontsize:" + font_size + " " + msg
-	fmt_time := strconv.FormatInt(int64(time_ms), 10)
-	hypr.HyprCtl("notify", icon, fmt_time, color, fmt_msg)
+func (hypr HyprConn) SendNotification(nf *Notification) {
+
+	icon := i32ToString(nf.icon.value)
+	timeout := i32ToString(nf.time_ms)
+	font_size := i32ToString(nf.font_size.value)
+	msg := "fontsize:" + font_size + " " + nf.icon.padding + nf.message
+
+	hypr.HyprCtl("notify", icon, timeout, nf.color.value, msg)
 }
 
 func (hypr HyprConn) DismissNotify(last int) {
@@ -90,37 +53,6 @@ func (hypr HyprConn) DismissNotify(last int) {
 	hypr.HyprCtl("dismissnotify", amount)
 }
 
-func attachIconsStruct(hypr *HyprConn) {
-	var icons Icons
-	icons.NOICON = "-1"
-	icons.WARNING = "0"
-	icons.INFO = "1"
-	icons.HINT = "2"
-	icons.ERROR = "3"
-	icons.CONFUSED = "4"
-	icons.OK = "5"
-
-	hypr.icon = icons
-}
-
-func attachColorsStruct(hypr *HyprConn) {
-	var color Colors
-	color.DEFAULT = "0"
-	color.VIOLET = color.HEX("9400D3")
-	color.INDIGO = color.HEX("4B0082")
-	color.BLUE = color.HEX("0000FF")
-	color.LIGHTBLUE = color.HEX("00d2ff")
-	color.GREEN = color.HEX("00FF00")
-	color.YELLOW = color.HEX("FFFF00")
-	color.ORANGE = color.HEX("FF7F00")
-	color.RED = color.HEX("FF0000")
-
-	hypr.color = color
-}
-
 func GetHyprSocket(hypr *HyprConn) {
 	hyprsock.addr = GetHyprSocketAddr()
-	attachIconsStruct(hypr)
-	attachColorsStruct(hypr)
-	hypr.DEFAULT_FONT_SIZE = "13"
 }

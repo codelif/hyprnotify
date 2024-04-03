@@ -124,7 +124,7 @@ notify-send "Hello, World!"
 ```
 Add a font-size hint:
 ```sh
-notify-send "This is very big!" -h string:x-hyprnotify-font-size:40
+notify-send "This is very big!" -h int:x-hyprnotify-font-size:40
 ```
 Add an urgency hint and last for 20 seconds:
 ```sh
