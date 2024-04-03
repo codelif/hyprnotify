@@ -16,6 +16,7 @@ const (
 	INTROSPECTABLE_IFAC = "org.freedesktop.DBus.Introspectable"
 
 	FDN_SPEC_VERSION = "1.2"
+	MAX_UINT32       = ^uint32(0)
 )
 
 const DBUS_XML = `<node name="` + FDN_PATH + `">
@@ -62,8 +63,10 @@ const DBUS_XML = `<node name="` + FDN_PATH + `">
 </node>`
 
 var (
-	conn     *dbus.Conn
-	hyprsock HyprConn
+	conn                  *dbus.Conn
+	hyprsock              HyprConn
+	ongoing_notifications map[uint32]chan uint32 = make(map[uint32]chan uint32)
+	current_id            uint32                 = 0
 )
 
 type DBusNotify string
@@ -84,9 +87,17 @@ func (n DBusNotify) Notify(
 	expire_timeout int32,
 ) (uint32, *dbus.Error) {
 
-	nf := NewNotification()
+	if replaces_id > 0 {
+		n.CloseNotification(replaces_id)
+	}
+	if current_id == MAX_UINT32 {
+		current_id++
+	}
+	current_id++
 
-  nf.message = summary
+	// Send Notification
+	nf := NewNotification()
+	nf.message = summary
 	parse_hints(&nf, hints)
 
 	if expire_timeout != -1 {
@@ -94,14 +105,25 @@ func (n DBusNotify) Notify(
 	}
 	hyprsock.SendNotification(&nf)
 
-	go SendCloseSignal(expire_timeout, 1)
-	return 1, nil
+	// ClosedNotification Signal Stuff
+	flag := make(chan uint32, 1)
+	ongoing_notifications[current_id] = flag
+	go SendCloseSignal(nf.time_ms, current_id, 1, flag)
+	return current_id, nil
 }
 
 func (n DBusNotify) CloseNotification(id uint32) *dbus.Error {
-	hyprsock.DismissNotify(-1)
+	count := 0
+	for i := current_id; i >= id; i-- {
+		flag, ok := ongoing_notifications[i]
+		if ok {
+			flag <- 3
+		}
+		count++
+	}
 
-	go SendCloseSignal(0, 3)
+	hyprsock.DismissNotify(count)
+
 	return nil
 }
 
@@ -109,15 +131,24 @@ func (n DBusNotify) GetServerInformation() (string, string, string, string, *dbu
 	return PACKAGE, VENDOR, VERSION, FDN_SPEC_VERSION, nil
 }
 
-func SendCloseSignal(timeout int32, reason uint32) {
+func SendCloseSignal(timeout int32, id uint32, reason uint32, flag chan uint32) {
 	d := time.Duration(int64(timeout)) * time.Millisecond
-	time.Sleep(d)
+
+	tick := time.NewTicker(d)
+	defer tick.Stop()
+
+	select {
+	case <-tick.C:
+	case reason = <-flag:
+	}
 	conn.Emit(
 		FDN_PATH,
 		"org.freedesktop.Notifications.NotificationClosed",
-		uint32(0),
+		id,
 		reason,
 	)
+
+	delete(ongoing_notifications, id)
 }
 
 func parse_hints(nf *Notification, hints map[string]dbus.Variant) {
