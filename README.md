@@ -140,10 +140,11 @@ notify-send "This is serious stuff!" -u critical -t 20000
 
 - [x] Implement the DBus Specification
 - [x] Replace shell command invocation with IPC
-- [ ] Hints Support:
+- [x] Hints Support:
     - [x] urgency
     - [x] font-size
-    - [ ] color
+    - [x] color
+    - [x] icon
 - [ ] Add support for sound
 - [ ] Fix race condition in `CloseNotification` Signal
 - [ ] Scrap the Project
