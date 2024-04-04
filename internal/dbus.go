@@ -166,6 +166,13 @@ func parse_hints(nf *Notification, hints map[string]dbus.Variant) {
 	if ok {
 		nf.font_size.value = font_size
 	}
+  
+	hint_icon, ok := hints["x-hyprnotify-icon"].Value().(int32)
+	if ok {
+		nf.icon.value = hint_icon
+		nf.icon.padding = ""
+    nf.color.value = nf.color.DEFAULT
+	}
 
 	hint_color, ok := hints["x-hyprnotify-color"].Value().(string)
 	if ok {
@@ -177,11 +184,6 @@ func parse_hints(nf *Notification, hints map[string]dbus.Variant) {
 		}
 	}
 
-	hint_icon, ok := hints["x-hyprnotify-icon"].Value().(int32)
-	if ok {
-		nf.icon.value = hint_icon
-		nf.icon.padding = ""
-	}
 
 }
 
