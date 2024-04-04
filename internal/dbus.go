@@ -104,6 +104,7 @@ func (n DBusNotify) Notify(
 		nf.time_ms = expire_timeout
 	}
 	hyprsock.SendNotification(&nf)
+	go PlayAudio()
 
 	// ClosedNotification Signal Stuff
 	flag := make(chan uint32, 1)
@@ -190,6 +191,7 @@ func InitDBus() {
 	defer conn.Close()
 
 	GetHyprSocket(&hyprsock)
+	InitSpeaker()
 
 	n := DBusNotify(PACKAGE)
 	conn.Export(n, FDN_PATH, FDN_IFAC)
