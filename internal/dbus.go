@@ -67,6 +67,7 @@ var (
 	hyprsock              HyprConn
 	ongoing_notifications map[uint32]chan uint32 = make(map[uint32]chan uint32)
 	current_id            uint32                 = 0
+	sound                 bool
 )
 
 type DBusNotify string
@@ -104,8 +105,10 @@ func (n DBusNotify) Notify(
 		nf.time_ms = expire_timeout
 	}
 	hyprsock.SendNotification(&nf)
-	go PlayAudio()
 
+	if sound {
+		go PlayAudio()
+	}
 	// ClosedNotification Signal Stuff
 	flag := make(chan uint32, 1)
 	ongoing_notifications[current_id] = flag
@@ -182,7 +185,9 @@ func parse_hints(nf *Notification, hints map[string]dbus.Variant) {
 
 }
 
-func InitDBus() {
+func InitDBus(enable_sound bool) {
+	sound = enable_sound
+
 	var err error
 	conn, err = dbus.ConnectSessionBus()
 	if err != nil {
@@ -191,7 +196,9 @@ func InitDBus() {
 	defer conn.Close()
 
 	GetHyprSocket(&hyprsock)
-	InitSpeaker()
+	if sound {
+		InitSpeaker()
+	}
 
 	n := DBusNotify(PACKAGE)
 	conn.Export(n, FDN_PATH, FDN_IFAC)
