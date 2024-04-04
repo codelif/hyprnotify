@@ -124,11 +124,7 @@ You can download the release binaries directly from the [releases](https://githu
 ## Usage
 Execute the daemon:
 ```sh
-./hyprnotify
-```
-or add `--silent` argument to disable sound
-```sh
-./hyprnotify --silent
+hyprnotify
 ```
 
 ### Examples
