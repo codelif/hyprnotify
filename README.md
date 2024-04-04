@@ -54,8 +54,9 @@
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#compiling">Compiling</a></li>
+        <li><a href="#arch-linux">Arch Linux</a></li>
+        <li><a href="#other-linux-distributions">Other Linux Distributions</a></li>
+        <li><a href="#building-from-source">Building from Source</a></li>
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
@@ -85,12 +86,21 @@ Hyprnotify is a [Freedesktop.org](https://specifications.freedesktop.org/notific
 
 To get hyprnotify you can either download the binary build by github actions. Or build it locally.
 
-### Prerequisites
+### Arch Linux
+`hyprnotify` is available on the AUR. You can install it with a AUR helper like `yay`.
+```sh
+yay -S hyprnotify
+```
+### Other Linux Distributions
+You can download the release binaries directly from the [releases](https://github.com/codelif/hyprnotify/releases) page.
+
+### Building from Source
+#### Prerequisites
 
  - `go` compiler
  - `libnotify` to send notifications with `notify-send` (optional)
 
-### Compiling
+#### Compiling
 
 1. Clone the repo and cd into it
    ```sh
@@ -120,7 +130,8 @@ or add `--silent` argument to disable sound
 ```sh
 ./hyprnotify --silent
 ```
-Now execute any of the commands below in another shell.
+
+### Examples
 
 Send a notification:
 ```sh
@@ -134,6 +145,42 @@ Add an urgency hint and last for 20 seconds:
 ```sh
 notify-send "This is serious stuff!" -u critical -t 20000 
 ```
+### Custom Hints
+|          Hint           |              Example                |              Comment             |
+|:-----------------------:|:-----------------------------------:|:---------------------------------|
+| `x-hyprnotify-font-size`| `int:x-hyprnotify-font-size:30`     | font size for notification       |
+| `x-hyprnotify-color`    | `string:x-hyprnotify-color:#ff30fa` | hex color code for notif. color  |
+| `x-hyprnotify-icon`     | `int:x-hyprnotify-icon:3`           | icon identifier for notification |
+
+
+#### `x-hyprnotify-icon`
+| ID |   Icon | Preview |
+|:--:|:-------|:-------:|
+|`0` |WARNING |![WARNING](https://github.com/codelif/hyprnotify/assets/68972644/7bf5ff97-1d6a-45b0-9715-7e8d1535d866)|
+|`1` |INFO    |![INFO](https://github.com/codelif/hyprnotify/assets/68972644/473e5752-42b3-44cf-bd07-bed64abc9660)|
+|`2` |HINT    |![HINT](https://github.com/codelif/hyprnotify/assets/68972644/ffc6ff60-1058-4e5b-8fe3-611ba4b40206)|
+|`3` |ERROR   |![ERROR](https://github.com/codelif/hyprnotify/assets/68972644/630b2979-382b-4fe3-902e-6ee3526fcfe4)|
+|`4` |CONFUSED|![CONFUSED](https://github.com/codelif/hyprnotify/assets/68972644/64ae100b-dc2c-46dd-be8c-afdacb03042b)|
+|`5` |OK      |![OK](https://github.com/codelif/hyprnotify/assets/68972644/2b66a258-5e07-4683-a798-fe6f47d67716)|
+
+### Audio Playback
+A notification sound is played along with a notification.
+
+To disable this behaviour pass `--silent` flag when executing.
+```sh
+hyprnotify --silent
+```
+`--no-sound` and `-s` also works the same way.
+
+### Note about `replace-id`:
+When using `replace-id` with `notify-send`
+```sh
+notify-send --replace-id=10 "Hello"
+```
+All the notifications with IDs of more than `replace-id` will also be deleted. (11, 12, 13...) \
+This is due to the inherent design of `hyprctl dismissnotify`. So, it is not fixable.\
+\
+Due to this, it is advisable to use it to replace only the latest notification.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
