@@ -25,6 +25,7 @@ jobs:
 
     - name: Build
       run: |
+        sudo apt-get install libasound2-dev -y
         go build -v ./cmd/hyprnotify
         strip hyprnotify
         
