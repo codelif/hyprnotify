@@ -116,6 +116,10 @@ Execute the daemon:
 ```sh
 ./hyprnotify
 ```
+or add `--silent` argument to disable sound
+```sh
+./hyprnotify --silent
+```
 Now execute any of the commands below in another shell.
 
 Send a notification:
