@@ -146,6 +146,8 @@ notify-send "This is serious stuff!" -u critical -t 20000
     - [x] color
     - [x] icon
 - [ ] Add support for sound
+    - [x] Default sound support
+    - [ ] sound hints
 - [x] Fix race condition in `CloseNotification` Signal
 - [ ] Scrap the Project
 
