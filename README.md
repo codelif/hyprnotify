@@ -98,6 +98,7 @@ You can download the release binaries directly from the [releases](https://githu
 #### Prerequisites
 
  - `go` compiler
+ - `alsa-lib` or `libasound` for sound support
  - `libnotify` to send notifications with `notify-send` (optional)
 
 #### Compiling
