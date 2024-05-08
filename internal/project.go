@@ -1,7 +1,7 @@
 package internal
 
 const (
-	VERSION = "0.6.2"
+	VERSION = "0.7.0"
 	PACKAGE = "hyprnotify"
 	VENDOR  = "hyprnotify"
 )
