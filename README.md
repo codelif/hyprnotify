@@ -26,6 +26,7 @@
 [![Go][golang-shield]][golang-url]
 ![](https://github.com/codelif/hyprnotify/actions/workflows/go.yml/badge.svg)
 
+
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
@@ -83,6 +84,7 @@ Hyprnotify is a [Freedesktop.org](https://specifications.freedesktop.org/notific
 
 <!-- GETTING STARTED -->
 ## Getting Started
+![](https://repology.org/badge/vertical-allrepos/hyprnotify.svg)
 
 To get hyprnotify you can either download the binary build by github actions. Or build it locally.
 
