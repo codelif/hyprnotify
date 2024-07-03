@@ -1,12 +1,10 @@
 package internal
 
 import (
+	"embed"
 	"time"
-  "embed"
 
-	"github.com/gopxl/beep"
-	"github.com/gopxl/beep/speaker"
-	"github.com/gopxl/beep/wav"
+	"github.com/hajimehoshi/ebiten/v2/audio"
 )
 
 //go:embed audio
@@ -17,19 +15,23 @@ func PlayAudio() {
 	if err != nil {
 		panic(err)
 	}
-	streamer, _, err := wav.Decode(f)
+
+	ctx := audio.CurrentContext()
+
+	player, err := ctx.NewPlayer(f)
 	if err != nil {
 		panic(err)
 	}
-	defer streamer.Close()
-	speaker.Play(streamer)
-	for streamer.Len() != streamer.Position() {
+	defer player.Close()
+
+	player.Play()
+	for player.IsPlaying() {
 		time.Sleep(time.Second)
 	}
 }
 
 func InitSpeaker() {
-	var sr beep.SampleRate = 44100
-	speaker.Init(sr, sr.N(time.Second/10))
-
+	// var sr beep.SampleRate = 44100
+	// speaker.Init(sr, sr.N(time.Second/10))
+	audio.NewContext(44100)
 }
