@@ -93,6 +93,33 @@ To get hyprnotify you can either download the binary build by github actions. Or
 ```sh
 yay -S hyprnotify
 ```
+
+### NixOS
+`hyprnotify` is available on NixOS unstable.
+It is quite simple to add:
+1. Add the unstable tarball:
+```nix
+let
+  unstableTarball =
+    fetchTarball
+      https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz;
+in
+# ...
+```
+
+2. Add an overlay to use unstable packages
+```nix
+nixpkgs.config = {
+  packageOverrides = pkgs: {
+    unstable = import unstableTarball {
+      config = config.nixpkgs.config;
+    };
+  };
+};
+```
+
+3. Add `unstable.hyprnotify` to your `environment.systemPackages` 
+
 ### Other Linux Distributions
 You can download the release binaries directly from the [releases](https://github.com/codelif/hyprnotify/releases) page.
 
