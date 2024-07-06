@@ -263,7 +263,7 @@ Distributed under the Apache-2.0 License. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Harsh Sharma - [@codelif_](https://x.com/codelif_) - goharsh007@gmail.com
+Harsh Sharma - [@codelif_](https://x.com/codelif_) - harsh@codelif.in
 
 Project Link: [https://github.com/codelif/hyprnotify](https://github.com/codelif/hyprnotify)
 
