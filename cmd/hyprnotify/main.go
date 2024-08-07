@@ -1,19 +1,19 @@
 package main
 
 import (
+	"flag"
 	"github.com/codelif/hyprnotify/internal"
-	"os"
 )
 
 func main() {
-	var enable_sound bool = true
+	var enableSound bool
+	const message = "Disable sound"
 
-	for _, arg := range os.Args[1:] {
-		if arg == "--no-sound" || arg == "--silent" || arg == "-s" {
-			enable_sound = false
-			break
-		}
-	}
+	flag.BoolVar(&enableSound, "no-sound", false, message)
+	flag.BoolVar(&enableSound, "silent", false, message)
+	flag.BoolVar(&enableSound, "s", false, message)
 
-	internal.InitDBus(enable_sound)
+	flag.Parse()
+
+	internal.InitDBus(enableSound)
 }
