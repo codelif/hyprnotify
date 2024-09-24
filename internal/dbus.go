@@ -3,6 +3,8 @@ package internal
 import (
 	"fmt"
 	"os"
+	"regexp"
+	"strings"
 	"time"
 
 	"github.com/godbus/dbus/v5"
@@ -98,7 +100,20 @@ func (n DBusNotify) Notify(
 
 	// Send Notification
 	nf := NewNotification()
-	nf.message = summary
+	if body != "" {
+		nf.message = fmt.Sprintf("%s\n%s", summary, body)
+	} else {
+		nf.message = summary
+	}
+
+	// Using RegExp to add padding for all lines
+	nf.message = regexp.
+		MustCompile("^\\s*|(\n)\\s*(.)").
+		ReplaceAllString(
+			strings.TrimLeft(nf.message, "\n"),
+			"$1\u205F\u205F$2",
+		)
+
 	parse_hints(&nf, hints)
 
 	if expire_timeout != -1 {
