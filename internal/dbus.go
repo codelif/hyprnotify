@@ -100,6 +100,16 @@ func (n DBusNotify) Notify(
 
 	// Send Notification
 	nf := NewNotification()
+
+	parse_hints(&nf, hints)
+
+	// Setting min-width, left alignment
+	summary = fmt.Sprintf("%-60s", summary)
+	if nf.icon.value == nf.icon.NOICON {
+		summary += "  "
+	}
+	summary += "\u205F"
+
 	if body != "" {
 		nf.message = fmt.Sprintf("%s\n%s", summary, body)
 	} else {
@@ -111,10 +121,8 @@ func (n DBusNotify) Notify(
 		MustCompile("^\\s*|(\n)\\s*(.)").
 		ReplaceAllString(
 			strings.TrimLeft(nf.message, "\n"),
-			"$1\u205F\u205F$2",
+			"$1\u205F $2",
 		)
-
-	parse_hints(&nf, hints)
 
 	if expire_timeout != -1 {
 		nf.time_ms = expire_timeout
