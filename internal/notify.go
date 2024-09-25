@@ -80,27 +80,23 @@ func newIconStruct() icon {
 
 func (nf *Notification) set_urgency(urgency uint8) {
 	icon := nf.icon.NOICON
-	padding := ""
 	color := nf.color.DEFAULT
 	var time_ms int32 = 5 * 1000
 
 	if urgency == 0 {
 		icon = nf.icon.OK
-		padding = " "
 		color = nf.color.GREEN
 	} else if urgency == 1 {
 		icon = nf.icon.NOICON
-		padding = " "
 		color = nf.color.LIGHTBLUE
 	} else if urgency == 2 {
 		icon = nf.icon.WARNING
-		padding = "  "
 		color = nf.color.RED
 		time_ms = 60 * 1000
 	}
 
 	nf.icon.value = icon
-	nf.icon.padding = padding
+	nf.icon.padding = ""
 	nf.color.value = color
 	nf.time_ms = time_ms
 }

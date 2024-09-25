@@ -3,6 +3,8 @@ package internal
 import (
 	"fmt"
 	"os"
+	"regexp"
+	"strings"
 	"time"
 
 	"github.com/godbus/dbus/v5"
@@ -63,17 +65,18 @@ const DBUS_XML = `<node name="` + FDN_PATH + `">
 </node>`
 
 var (
-	conn                  *dbus.Conn
-	hyprsock              HyprConn
-	ongoing_notifications map[uint32]chan uint32 = make(map[uint32]chan uint32)
-	current_id            uint32                 = 0
-	sound                 bool
+	conn                        *dbus.Conn
+	hyprsock                    HyprConn
+	ongoing_notifications       map[uint32]chan uint32 = make(map[uint32]chan uint32)
+	current_id                  uint32                 = 0
+	sound                       bool
+	notification_padding_regexp *regexp.Regexp         = regexp.MustCompile("^\\s*|(\n)\\s*(.)")
 )
 
 type DBusNotify string
 
 func (n DBusNotify) GetCapabilities() ([]string, *dbus.Error) {
-	var cap []string
+	cap := []string{"body"}
 	return cap, nil
 }
 
@@ -98,8 +101,28 @@ func (n DBusNotify) Notify(
 
 	// Send Notification
 	nf := NewNotification()
-	nf.message = summary
+
 	parse_hints(&nf, hints)
+
+	// Setting min-width, left alignment
+	summary = fmt.Sprintf("%-60s", summary)
+	if nf.icon.value == nf.icon.NOICON {
+		summary += "  "
+	}
+	summary += "\u205F"
+
+	if body != "" {
+		nf.message = fmt.Sprintf("%s\n%s", summary, body)
+	} else {
+		nf.message = summary
+	}
+
+	// Using RegExp to add padding for all lines
+	nf.message = notification_padding_regexp.
+		ReplaceAllString(
+			strings.TrimLeft(nf.message, "\n"),
+			"$1\u205F $2",
+		)
 
 	if expire_timeout != -1 {
 		nf.time_ms = expire_timeout
