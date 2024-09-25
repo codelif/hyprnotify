@@ -1,19 +1,24 @@
 package main
 
 import (
-	"flag"
 	"github.com/codelif/hyprnotify/internal"
+	"github.com/spf13/cobra"
 )
 
 func main() {
 	var enableSound bool
-	const message = "Disable sound"
 
-	flag.BoolVar(&enableSound, "no-sound", false, message)
-	flag.BoolVar(&enableSound, "silent", false, message)
-	flag.BoolVar(&enableSound, "s", false, message)
+	Cmd := &cobra.Command{
+		Use:  "hyprnotify",
+		Long: `DBus Implementation of Freedesktop Notification spec for 'hyprctl notify'`,
+		Run: func(cmd *cobra.Command, args []string) {
+			internal.InitDBus(enableSound)
+		},
+	}
 
-	flag.Parse()
+	CmdFlags := Cmd.Flags()
 
-	internal.InitDBus(enableSound)
+	CmdFlags.BoolVarP(&enableSound, "no-sound", "s", false, "disable sound, silent mode")
+
+	Cmd.Execute()
 }
