@@ -69,8 +69,8 @@ var (
 	hyprsock                    HyprConn
 	ongoing_notifications       map[uint32]chan uint32 = make(map[uint32]chan uint32)
 	current_id                  uint32                 = 0
-	sound                       bool
 	notification_padding_regexp *regexp.Regexp         = regexp.MustCompile("^\\s*|(\n)\\s*(.)")
+	sound                       bool
 )
 
 type DBusNotify string
@@ -187,7 +187,7 @@ func parse_hints(nf *Notification, hints map[string]dbus.Variant) {
 
 	font_size, ok := hints["x-hyprnotify-font-size"].Value().(int32)
 	if ok {
-		nf.font_size.value = font_size
+		nf.font_size.value = uint8(font_size)
 	}
   
 	hint_icon, ok := hints["x-hyprnotify-icon"].Value().(int32)
@@ -206,8 +206,6 @@ func parse_hints(nf *Notification, hints map[string]dbus.Variant) {
 			nf.color.value = nf.color.HEX(hint_color)
 		}
 	}
-
-
 }
 
 func InitDBus(enable_sound bool) {

@@ -60,7 +60,7 @@ func (hypr HyprConn) HyprCtl(args ...string) {
 func (hypr HyprConn) SendNotification(nf *Notification) {
 	icon := i32ToString(nf.icon.value)
 	timeout := i32ToString(nf.time_ms)
-	font_size := i32ToString(nf.font_size.value)
+	font_size := fmt.Sprintf("%d", nf.font_size.value)
 	msg := "fontsize:" + font_size + " " + nf.icon.padding + nf.message
 
 	hypr.HyprCtl("notify", icon, timeout, nf.color.value, msg)
