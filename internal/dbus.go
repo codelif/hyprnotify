@@ -65,11 +65,12 @@ const DBUS_XML = `<node name="` + FDN_PATH + `">
 </node>`
 
 var (
-	conn                  *dbus.Conn
-	hyprsock              HyprConn
-	ongoing_notifications map[uint32]chan uint32 = make(map[uint32]chan uint32)
-	current_id            uint32                 = 0
-	sound                 bool
+	conn                        *dbus.Conn
+	hyprsock                    HyprConn
+	ongoing_notifications       map[uint32]chan uint32 = make(map[uint32]chan uint32)
+	current_id                  uint32                 = 0
+	sound                       bool
+	notification_padding_regexp *regexp.Regexp         = regexp.MustCompile("^\\s*|(\n)\\s*(.)")
 )
 
 type DBusNotify string
@@ -117,8 +118,7 @@ func (n DBusNotify) Notify(
 	}
 
 	// Using RegExp to add padding for all lines
-	nf.message = regexp.
-		MustCompile("^\\s*|(\n)\\s*(.)").
+	nf.message = notification_padding_regexp.
 		ReplaceAllString(
 			strings.TrimLeft(nf.message, "\n"),
 			"$1\u205F $2",
