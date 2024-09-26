@@ -6,19 +6,19 @@ import (
 )
 
 func main() {
-	var enableSound bool
+	var disableSound bool
 
 	Cmd := &cobra.Command{
 		Use:  "hyprnotify",
 		Long: `DBus Implementation of Freedesktop Notification spec for 'hyprctl notify'`,
 		Run: func(cmd *cobra.Command, args []string) {
-			internal.InitDBus(enableSound)
+			internal.InitDBus(!disableSound)
 		},
 	}
 
 	CmdFlags := Cmd.Flags()
 
-	CmdFlags.BoolVarP(&enableSound, "no-sound", "s", false, "disable sound, silent mode")
+	CmdFlags.BoolVarP(&disableSound, "no-sound", "s", false, "disable sound, silent mode")
 
 	Cmd.Execute()
 }
