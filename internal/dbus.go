@@ -71,6 +71,7 @@ var (
 	current_id                  uint32                 = 0
 	notification_padding_regexp *regexp.Regexp         = regexp.MustCompile("^\\s*|(\n)\\s*(.)")
 	sound                       bool
+	FixedFontSize               bool
 )
 
 type DBusNotify string
@@ -185,16 +186,18 @@ func parse_hints(nf *Notification, hints map[string]dbus.Variant) {
 		nf.set_urgency(urgency)
 	}
 
-	font_size, ok := hints["x-hyprnotify-font-size"].Value().(int32)
-	if ok {
-		nf.font_size.value = uint8(font_size)
+	if !FixedFontSize {
+		font_size, ok := hints["x-hyprnotify-font-size"].Value().(int32)
+		if ok {
+			nf.font_size.value = uint8(font_size)
+		}
 	}
-  
+
 	hint_icon, ok := hints["x-hyprnotify-icon"].Value().(int32)
 	if ok {
 		nf.icon.value = hint_icon
 		nf.icon.padding = ""
-    nf.color.value = nf.color.DEFAULT
+		nf.color.value = nf.color.DEFAULT
 	}
 
 	hint_color, ok := hints["x-hyprnotify-color"].Value().(string)

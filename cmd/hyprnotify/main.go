@@ -20,6 +20,7 @@ func main() {
 
 	CmdFlags.BoolVarP(&disableSound, "no-sound", "s", false, "disable sound, silent mode")
 	CmdFlags.Uint8VarP(&internal.DefaultFontSize, "font-size", "f", 13, "set default font size (range 1-255)")
+	CmdFlags.BoolVar(&internal.FixedFontSize, "fixed-font-size", false, "makes font size fixed, ignoring new sizes")
 
 	Cmd.Execute()
 }
