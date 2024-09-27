@@ -1,5 +1,7 @@
 package internal
 
+var DefaultFontSize uint8
+
 type Notification struct {
 	message string
 
@@ -105,7 +107,8 @@ func NewNotification() Notification {
 
 	n.icon = newIconStruct()
 	n.color = newColorStruct()
-	n.font_size = fontSize{value: 13}
+
+	n.font_size = fontSize{value: DefaultFontSize}
 
 	n.set_urgency(1) // default
 	return n
