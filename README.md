@@ -60,7 +60,15 @@
         <li><a href="#building-from-source">Building from Source</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
+    <li>
+      <a href="#usage">Usage</a>
+      <ul>
+        <li><a href="#command-line-arguments">Command-line arguments</a></li>
+        <li><a href="#examples">Examples</a></li>
+        <li><a href="#custom-hints">Custom Hints</a></li>
+        <li><a href="#note-about-replace-id">Note about `replace-id`</a></li>
+      </ul>
+    </li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
@@ -156,12 +164,26 @@ Execute the daemon:
 ```sh
 hyprnotify
 ```
+### Command-line arguments
+| Argument            | Remark                                       |
+|:-------------------:|:--------------------------------------------:|
+|`--font-size` or `-f`| Set custom default font size (default is 13) |
+|`--fixed-font-size`  | Ignores font size hints                      |
+|`--no-sound` or `-s` | Enable silent mode                           |
+|`--help`             | Displays help text                           |
+
+> [!IMPORTANT]
+> It is recommended to set the Hyprland default `font-family` to be `monospace` on hyprland.conf misc section. Otherwise you may experience unusual spacing and padding. See here: https://wiki.hyprland.org/Configuring/Variables/#misc
 
 ### Examples
 
 Send a notification:
 ```sh
 notify-send "Hello, World!"
+```
+Send a notification with body text:
+```sh
+notify-send "Chat?" "Is this real"
 ```
 Add a font-size hint:
 ```sh
@@ -172,8 +194,8 @@ Add an urgency hint and last for 20 seconds:
 notify-send "This is serious stuff!" -u critical -t 20000 
 ```
 ### Custom Hints
-|          Hint           |              Example                |              Comment             |
-|:-----------------------:|:-----------------------------------:|:---------------------------------|
+|          Hint           |              Example                |              Remark              |
+|:-----------------------:|:-----------------------------------:|:--------------------------------:|
 | `x-hyprnotify-font-size`| `int:x-hyprnotify-font-size:30`     | font size for notification       |
 | `x-hyprnotify-color`    | `string:x-hyprnotify-color:#ff30fa` | hex color code for notif. color  |
 | `x-hyprnotify-icon`     | `int:x-hyprnotify-icon:3`           | icon identifier for notification |
@@ -189,21 +211,12 @@ notify-send "This is serious stuff!" -u critical -t 20000
 |`4` |CONFUSED|![CONFUSED](https://github.com/codelif/hyprnotify/assets/68972644/64ae100b-dc2c-46dd-be8c-afdacb03042b)|
 |`5` |OK      |![OK](https://github.com/codelif/hyprnotify/assets/68972644/2b66a258-5e07-4683-a798-fe6f47d67716)|
 
-### Audio Playback
-A notification sound is played along with a notification.
-
-To disable this behaviour pass `--silent` flag when executing.
-```sh
-hyprnotify --silent
-```
-`--no-sound` and `-s` also works the same way.
-
 ### Note about `replace-id`:
 When using `replace-id` with `notify-send`
 ```sh
 notify-send --replace-id=10 "Hello"
 ```
-All the notifications with IDs of more than `replace-id` will also be deleted. (11, 12, 13...) \
+All the notifications with IDs more than `replace-id` will also be deleted. (11, 12, 13...) \
 This is due to the inherent design of `hyprctl dismissnotify`. So, it is not fixable.\
 \
 Due to this, it is advisable to use it to replace only the latest notification.
