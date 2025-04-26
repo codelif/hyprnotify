@@ -92,6 +92,11 @@ func (n DBusNotify) Notify(
 	expire_timeout int32,
 ) (uint32, *dbus.Error) {
 
+	ruleAction := match_config(app_name)
+	if ruleAction.Ignore {
+		return current_id, nil
+	}
+
 	if replaces_id > 0 {
 		n.CloseNotification(replaces_id)
 	}
@@ -130,7 +135,7 @@ func (n DBusNotify) Notify(
 	}
 	hyprsock.SendNotification(&nf)
 
-	if sound {
+	if sound && !ruleAction.Silence {
 		go PlayAudio()
 	}
 	// ClosedNotification Signal Stuff
@@ -209,6 +214,15 @@ func parse_hints(nf *Notification, hints map[string]dbus.Variant) {
 			nf.color.value = nf.color.HEX(hint_color)
 		}
 	}
+}
+
+func match_config(appName string) action {
+	for _, rule := range Config.Rule {
+		if match, err := regexp.MatchString(rule.Matches, appName); err == nil && match {
+			return rule.Action
+		}
+	}
+	return action{}
 }
 
 func InitDBus(enable_sound bool) {
